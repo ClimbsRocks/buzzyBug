@@ -18,6 +18,25 @@ var battlefield = d3.select('body').append('svg:svg')
                     .attr('height', boardHeight);
 
 //create a row of boxes on the top and bottom
+var boxHeights = [];
+var boxWidth = 20;
+var boxHeight = 250;
+
+for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
+  var heightStart = 350;
+  boxHeights.push([boxHeight, heightStart, i]);
+}
+
+var boxes = battlefield
+              .selectAll('image')
+              .data(boxHeights)
+              .enter()
+              .append('svg:image')
+              .attr('xlink:href', 'images/1.png')
+              .attr('height', function(d) {return d[0];})
+              .attr('width', boxWidth)
+              .attr('x', function(d) { return d[2]*boxWidth; })
+              .attr('y', function(d) { return d[1]; });
 
 
 //create a user, controllable by dragging
@@ -37,6 +56,8 @@ var battlefield = d3.select('body').append('svg:svg')
 //extra credit:
   //MAKE IT MOBILE!!
     //wrap it in ionic
+
+  //fix the size of the board to something that'll work on all screens
 
   //server?
 
