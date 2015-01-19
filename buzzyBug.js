@@ -17,31 +17,83 @@ var battlefield = d3.select('body').append('svg:svg')
                     .attr('width', boardWidth)
                     .attr('height', boardHeight);
 
-//create a row of boxes on the top and bottom
-var boxHeights = [];
+/*
+  boxPositions will be filled with tuples
+  the index will give us the x positions (since they're in order and we know how wide each box is)
+  the first value of the tuple will give us the y position
+  the second value of the tuple will give us the height of the box
+*/
+
+//create a row of boxes that represents the safe zone
+var boxPositions = [];
 var boxWidth = 20;
-var boxHeight = 250;
+var boxHeight = 450;
 
 for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
-  var heightStart = 350;
-  boxHeights.push([boxHeight, heightStart, i]);
+  var heightStart = 400;
+  boxPositions.push([heightStart, boxHeight, i]);
+  //add the box's position to our array containing each box's position
 }
 
 var boxes = battlefield
               .selectAll('image')
-              .data(boxHeights)
+              .data(boxPositions)
               .enter()
               .append('svg:image')
-              .attr('xlink:href', 'images/1.png')
-              .attr('height', function(d) {return d[0];})
+              .attr('xlink:href', 'images/4.png')
+              .attr('height', function(d) {return d[1];})
               .attr('width', boxWidth)
               .attr('x', function(d) { return d[2]*boxWidth; })
-              .attr('y', function(d) { return d[1]; });
+              .attr('y', function(d) { return d[0]; });
+
 
 
 //create a user, controllable by dragging
+var addPlayer = function() {
+  var radius = 25;
+  var startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:radius}];
+  battlefield.playerRadius = radius;
+
+  var drag = d3.behavior.drag()
+   .on('dragstart', function() { circle.style('fill', 'red'); })
+   .on('drag', function() { circle.attr('cx', d3.event.x)
+                                  .attr('cy', d3.event.y); })
+   .on('dragend', function() { circle.style('fill', 'black'); });
+
+ var circle = battlefield.selectAll('.player')
+   .data(startingPosition)
+   .enter()
+   .append('svg:circle')
+   .attr('class', 'player')
+   .attr('cx', function(d) { return d.x; })
+   .attr('cy', function(d) { return d.y; })
+   .attr('r', function(d) { return d.r; })
+   .call(drag)
+   .style('fill', 'black');
+}
+addPlayer();
 
 //check for collisions of the user and the boxes
+var playerPosition = {};
+
+var playerCoordinates = function() {
+  d3.selectAll(".player").each( function(d, i){
+    playerPosition.x = d3.select(this).attr("cx");
+    playerPosition.y = d3.select(this).attr("cy");
+  });
+};
+
+var collisionInterval = setInterval(function() {
+  playerCoordinates();
+  var boxNumber = Math.floor(playerPosition.x/boxWidth);
+  var safeAreas = boxPositions[boxNumber];
+  if(playerPosition.y > safeAreas[0] && playerPosition.y < safeAreas[0] + safeAreas[1]) {
+    console.log('the player is safe');
+  } else {
+    // debugger;
+    console.log('out of bounds!');
+  }
+}, 500);
 
 //move the boxes on a fixed interval
 
@@ -75,3 +127,4 @@ var boxes = battlefield
   //background of the page?
   //background of the battlefield?
   //user score
+  //user image: 8 bit version of a bug
