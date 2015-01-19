@@ -31,8 +31,10 @@ var boxHeight = 450;
 
 for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
   var heightStart = 400;
+  if(i%2 === 0 ) {
+    heightStart = 800;
+  }
   boxPositions.push([heightStart, boxHeight, i]);
-  //add the box's position to our array containing each box's position
 }
 
 var boxes = battlefield
@@ -83,6 +85,7 @@ var playerCoordinates = function() {
   });
 };
 
+
 var collisionInterval = setInterval(function() {
   playerCoordinates();
   var boxNumber = Math.floor(playerPosition.x/boxWidth);
@@ -96,6 +99,34 @@ var collisionInterval = setInterval(function() {
 }, 500);
 
 //move the boxes on a fixed interval
+var counter = 0;
+var moveTimeout = setInterval(function() {
+  boxPositions = [];
+  console.log('box positions:', boxPositions);
+  counter++;
+  for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
+    var heightStart = 200;
+    if(i + counter %2 === 0 ) {
+      heightStart = 250;
+    }
+    boxPositions.push([heightStart, boxHeight, i]);
+  }
+
+  //try using remove to get rid of elements that are no longer useful;
+  boxes = battlefield
+                .selectAll('image')
+                .data(boxPositions)
+                .enter()
+                .append('svg:image')
+                .attr('xlink:href', 'images/4.png')
+                .attr('height', function(d) {return d[1];})
+                .attr('width', boxWidth)
+                .attr('x', function(d) { return d[2]*boxWidth; })
+                .attr('y', function(d) { return d[0]; })
+                .remove();
+
+
+},1000);
 
 //make the boxes different heights
   //make the box heights make sense transitioning from one to the other
