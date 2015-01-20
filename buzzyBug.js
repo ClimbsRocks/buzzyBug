@@ -161,12 +161,12 @@
   window.onkeydown = function(e) {
      var key = e.keyCode ? e.keyCode : e.which;
 
-     if (key == 38) {
-         console.log('heard it!');
+     if (key == 32) {
+         console.log('heard the spacebar!');
+         e.preventDefault();
      }else {
          console.log('heard the other thing!');
      }
-     e.preventDefault();
   }
 })  ();
 //make the boxes different heights
