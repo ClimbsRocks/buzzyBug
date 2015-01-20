@@ -10,6 +10,7 @@
 //we can lookup box number by taking the user's x position and dividing it by boxWidth; 
 //this is a super easy collision checker. 
 
+//sets the board based on the screen size
 var boardHeight = screen.height - 180;
 var boardWidth = screen.width - 200;
 var battlefield = d3.select('body').append('svg:svg')
@@ -37,6 +38,7 @@ for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
   boxPositions.push([heightStart, boxHeight, i]);
 }
 
+//append initial images
 battlefield
     .selectAll()
     .data(boxPositions)
@@ -100,31 +102,43 @@ var collisionInterval = setInterval(function() {
 }, 500);
 
 //move the boxes on a fixed interval
-var counter = 0;
+var prevWasConstriction = false;
 var moveTimeout = setInterval(function() {
-  boxPositions = [];
-  counter++;
-  for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
-    var heightStart = 250;
-    if((i + counter) %2 === 0 ) {
+  boxPositions.shift();
+  if(prevWasConstriction) {
+    //make it an easy one
+    heightStart = 200;
+    height = boxHeight;
+    prevWasConstriction = false;
+  } else {
+    //70% chance we'll make it a hard one
+    if(Math.random() > .3) {
+      height = 100;
+      heightStart = 50 + Math.random() * (boardHeight - 200);
+      prevWasConstriction = true;
+    } else {
       heightStart = 200;
+      height = boxHeight;
     }
-    boxPositions.push([heightStart, boxHeight, i]);
-    
   }
-    console.log(boxPositions[3]);
+  boxPositions.push([heightStart, boxHeight, 0]);
+  console.log(boxPositions);
 
-  battlefield
+  var boxes = battlefield
       .selectAll('.safePlaces')
-      .data(boxPositions)
-      .attr('class', 'safePlaces')
+      .data(boxPositions);
+  boxes.attr('x', function(d) {return d[2]*boxWidth;} );
+
+  boxes.enter()
+       .append('svg:image')
+       .attr('class', 'safePlaces')
       .attr('xlink:href', 'images/4.png')
-      .attr('height', function(d) {return d[1];})
-      .attr('width', 1*counter)
+      .attr('height', function(d) {console.log('d', d); return d[1];})
+      .attr('width', boxWidth)
       .attr('x', function(d) { return d[2]*boxWidth; })
       .attr('y', function(d) { return d[0]; })
-      .transition();
-
+  
+  // boxes.exit().remove();
 
 },1000);
 
