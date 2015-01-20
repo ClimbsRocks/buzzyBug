@@ -1,3 +1,6 @@
+//bugs: 
+
+
 //sets the board based on the screen size
 var boardHeight = screen.height - 180;
 var boardWidth = screen.width - 200;
@@ -75,7 +78,7 @@ var gameStart = function() {
 
   var collisionInterval = setInterval(function() {
     playerCoordinates();
-    var boxNumber = Math.ceil(playerPosition.x/boxWidth);
+    var boxNumber = Math.floor(playerPosition.x/boxWidth);
     var safeAreas = boxPositions[boxNumber];
     if(playerPosition.y > safeAreas[0] && playerPosition.y < safeAreas[0] + safeAreas[1]) {
       console.log('the player is safe');
@@ -115,7 +118,7 @@ var gameStart = function() {
         height = boxHeight;
       }
     }
-    boxPositions.push([heightStart, boxHeight, boxPositions.length]);
+    boxPositions.push([heightStart, boxHeight, boxPositions.length +1]);
 
     var boxes = battlefield
         .selectAll('.safePlaces')
