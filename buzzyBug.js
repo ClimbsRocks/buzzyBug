@@ -121,24 +121,23 @@ var moveTimeout = setInterval(function() {
       height = boxHeight;
     }
   }
-  boxPositions.push([heightStart, boxHeight, 0]);
-  console.log(boxPositions);
+  boxPositions.push([heightStart, boxHeight, boxPositions.length]);
 
   var boxes = battlefield
       .selectAll('.safePlaces')
       .data(boxPositions);
-  boxes.attr('x', function(d) {return d[2]*boxWidth;} );
-
-  boxes.enter()
-       .append('svg:image')
-       .attr('class', 'safePlaces')
+  boxes.attr('x', function(d) { 
+    d[2]--;
+    return d[2]*boxWidth;} 
+    )
+      .attr('class', 'safePlaces')
       .attr('xlink:href', 'images/4.png')
       .attr('height', function(d) {console.log('d', d); return d[1];})
       .attr('width', boxWidth)
       .attr('x', function(d) { return d[2]*boxWidth; })
       .attr('y', function(d) { return d[0]; })
   
-  // boxes.exit().remove();
+  boxes.exit().remove();
 
 },1000);
 
