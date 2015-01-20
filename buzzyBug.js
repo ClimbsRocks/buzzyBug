@@ -49,11 +49,14 @@
      var circle = battlefield.selectAll('.player')
        .data(startingPosition)
        .enter()
-       .append('svg:circle')
+       .append('svg:image')
        .attr('class', 'player')
-       .attr('cx', function(d) { return d.x; })
-       .attr('cy', function(d) { return d.y; })
-       .attr('r', function(d) { return d.r; })
+       .attr('xlink:href', 'images/bugRound1.png')
+       .attr('height', 50)
+       .attr('width', 50)
+       .attr('x', function(d) { return d.x; })
+       .attr('y', function(d) { return d.y; })
+       // .attr('r', function(d) { return d.r; })
        .style('fill', 'orange');
 
     }
@@ -64,15 +67,17 @@
 
     var playerCoordinates = function() {
       d3.selectAll(".player").each( function(d, i){
-        playerPosition.x = d3.select(this).attr("cx");
-        playerPosition.y = d3.select(this).attr("cy");
+        playerPosition.y = d3.select(this).attr("y");
       });
     };
 
     //CHECK FOR COLLISIONS ON A FIXED INTERVAL
+    d3.selectAll(".player").each( function(d, i){
+      playerPosition.x = d3.select(this).attr("x");
+    });
+    var boxNumber = Math.floor(playerPosition.x/boxWidth);
     collisionInterval = setInterval(function() {
       playerCoordinates();
-      var boxNumber = Math.floor(playerPosition.x/boxWidth);
       var safeAreas = boxPositions[boxNumber];
       if(playerPosition.y > safeAreas[0] && playerPosition.y < safeAreas[0] + safeAreas[1]) {
       } else {
@@ -161,7 +166,7 @@
         .data(newY)
         .transition()
         .duration(gravityIntervalTime)
-        .attr('cy', function(d) {return d.y;});
+        .attr('y', function(d) {return d.y;});
       currentY = currentY - gravity;
     }, gravityIntervalTime);
   }
