@@ -30,23 +30,24 @@ var boxWidth = 20;
 var boxHeight = 450;
 
 for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
-  var heightStart = 400;
+  var heightStart = 200;
   if(i%2 === 0 ) {
-    heightStart = 800;
+    heightStart = 250;
   }
   boxPositions.push([heightStart, boxHeight, i]);
 }
 
-var boxes = battlefield
-              .selectAll('image')
-              .data(boxPositions)
-              .enter()
-              .append('svg:image')
-              .attr('xlink:href', 'images/4.png')
-              .attr('height', function(d) {return d[1];})
-              .attr('width', boxWidth)
-              .attr('x', function(d) { return d[2]*boxWidth; })
-              .attr('y', function(d) { return d[0]; });
+battlefield
+    .selectAll()
+    .data(boxPositions)
+    .enter()
+    .append('svg:image')
+    .attr('class','safePlaces')
+    .attr('xlink:href', 'images/4.png')
+    .attr('height', function(d) {return d[1];})
+    .attr('width', boxWidth)
+    .attr('x', function(d) { return d[2]*boxWidth; })
+    .attr('y', function(d) { return d[0]; });
 
 
 
@@ -102,28 +103,36 @@ var collisionInterval = setInterval(function() {
 var counter = 0;
 var moveTimeout = setInterval(function() {
   boxPositions = [];
-  console.log('box positions:', boxPositions);
   counter++;
   for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
-    var heightStart = 200;
-    if(i + counter %2 === 0 ) {
-      heightStart = 250;
+    var heightStart = 250;
+    if((i + counter) %2 === 0 ) {
+      heightStart = 200;
     }
     boxPositions.push([heightStart, boxHeight, i]);
+    
   }
+    console.log(boxPositions[3]);
 
-  //try using remove to get rid of elements that are no longer useful;
-  boxes = battlefield
-                .selectAll('image')
-                .data(boxPositions)
-                .enter()
-                .append('svg:image')
-                .attr('xlink:href', 'images/4.png')
-                .attr('height', function(d) {return d[1];})
-                .attr('width', boxWidth)
-                .attr('x', function(d) { return d[2]*boxWidth; })
-                .attr('y', function(d) { return d[0]; })
-                .remove();
+  // try using remove to get rid of elements that are no longer useful;
+  battlefield
+      .selectAll('.safePlaces')
+      .data([])
+      .exit()
+      .remove()
+
+  battlefield
+      .selectAll('.safePlaces')
+      .data(boxPositions)
+      .enter()
+      .append('svg:image')
+      .attr('class', 'safePlaces')
+      .attr('xlink:href', 'images/4.png')
+      .attr('height', function(d) {return d[1];})
+      .attr('width', boxWidth)
+      .attr('x', function(d) { return d[2]*boxWidth; })
+      .attr('y', function(d) { return d[0]; })
+      .transition();
 
 
 },1000);
