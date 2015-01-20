@@ -17,7 +17,7 @@ var gameStart = function() {
   //create a row of boxes that represents the safe zone
   var boxPositions = [];
   console.log(boxPositions);
-  var boxWidth = 20;
+  var boxWidth = 25;
   var boxHeight = 450;
 
 
@@ -33,7 +33,7 @@ var gameStart = function() {
       .enter()
       .append('svg:image')
       .attr('class','safePlaces')
-      .attr('xlink:href', 'images/4.png')
+      .attr('xlink:href', 'images/8.png')
       .attr('height', function(d) {return d[1];})
       .attr('width', boxWidth)
       .attr('x', function(d) { return d[2]*boxWidth; })
@@ -132,7 +132,7 @@ var gameStart = function() {
       return d[2]*boxWidth;} 
       )
         .attr('class', 'safePlaces')
-        .attr('xlink:href', 'images/4.png')
+        .attr('xlink:href', 'images/8.png')
         .attr('height', function(d) { return d[1];})
         .attr('width', boxWidth)
         .attr('x', function(d) { return d[2]*boxWidth; })
@@ -148,7 +148,7 @@ var gameStart = function() {
       return d;
     });
 
-  },50);
+  },75);
 
 
   
