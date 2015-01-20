@@ -157,7 +157,7 @@
         //stop all the intervals
         clearInterval(moveTimeout);
         clearInterval(collisionInterval);
-        clearInterval(gravityInterval);
+        clearInterval(internalGravityInterval);
         if(currentScore > highScore) {
           highScore = currentScore;
           currentScore = 0;
@@ -223,14 +223,14 @@
     },75);
 
   //start gravityInterval within the game
-  gravityInterval = gravityInterval();
+  var internalGravityInterval = gravityInterval();
 
   }
 
-
+  //all logic for gravity
   var gravity = 0;
   var currentY = boardHeight/2;
-  var gravityIntervalTime = 100;
+  var gravityIntervalTime = 50;
   var gravityInterval = function() {
     return setInterval(function() {
       gravity--;
@@ -240,7 +240,8 @@
         .data(newY)
         .transition()
         .duration(gravityIntervalTime)
-        .attr('y', function(d) {console.log('d inside gravity', d); return d[0];});
+        .attr('cy', function(d) {return d.y;});
+      console.log('player', d3.selectAll('.player'));
       currentY = currentY - gravity;
     }, gravityIntervalTime);
   }
@@ -248,15 +249,10 @@
   d3.select('#resetButton').on('click', function() {
     battlefield.selectAll('.player').data([]).exit().remove();
     gameStart();
+    gravity = 0;
+    currentY = boardHeight/2;
+    
   });
-  //example: delete this
-  // gameBoard.
-  //   selectAll('.enemies').
-  //   data(randomPositions).
-  //   transition().
-  //   duration(5000).
-  //   attr('x', function(d){ return d[0]}).
-  //   attr('y', function(d){ return d[1]});
 
 
   window.onkeydown = function(e) {
@@ -264,10 +260,7 @@
      if (key == 32) {
          console.log('heard the spacebar!');
          e.preventDefault();
-         //i could just update it's y position, and make that a transition
-         //i'd have to create some kind of a 'isSpringing' variable to override normal gravity temporarily;
-         //or say just screw it, do it myself. i think that's what i prefer. 
-         console.log(d3.selectAll('.forcePlayer'));
+         gravity = 20;
      } else {
          console.log('heard the other thing!');
      }
