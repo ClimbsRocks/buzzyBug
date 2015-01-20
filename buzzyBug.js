@@ -77,21 +77,6 @@
         .call(drag)
         .style('fill', 'green');
 
-      var centerOfGravity = {x:boardWidth/2, y: boardHeight};
-
-      var force = d3.layout.force()
-          .nodes([centerOfGravity, circle2])
-          .links({source:circle2, target: centerOfGravity})
-          .size([50,50])
-          .linkStrength(0.1)
-          .friction(0.9)
-          .linkDistance(20)
-          .charge(-30)
-          .gravity(0.1)
-          .theta(0.8)
-          .alpha(0.1)
-          .start();
-
       //attempt to use d3 force
       var nodes = [],
           foci = [{ x:boardWidth/2, y: boardHeight }];
@@ -100,23 +85,25 @@
       var force = d3.layout.force()
           .nodes(nodes)
           .links([])
+          .linkStrength(0.1)
+          .friction(0.5)
           .gravity(0)
           .size([50, 50])
           .on("tick", tick);
 
       var node = battlefield.selectAll(".forcePlayer");
 
+      //alpha is the 'temperature' of the transition
+      //alpha is what slows it down, and eventually stops it
       function tick(e) {
         var k = .1 * e.alpha;
 
         // Push nodes toward their designated focus.
         nodes.forEach(function(o, i) {
           o.y += (foci[o.id].y - o.y) * k;
-          o.x += (foci[o.id].x - o.x) * k;
         });
 
         node
-            .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
       }
 
@@ -240,6 +227,18 @@
      }
   }
 })  ();
+
+/*
+  1. implement gravity
+  2. reverse gravity temporarily on spacebar
+  3. style so that background is constant, and each pipe is translucent
+  4. find a bug to style the icon with
+  5. adjust the game mechanics a bit to make it easier
+      more room between tough pipes
+      likely more friction to make the user move more slowly
+*/
+
+
 //make the boxes different heights
   //make the box heights make sense transitioning from one to the other
   //make the game progressively more difficult
