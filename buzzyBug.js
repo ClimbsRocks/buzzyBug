@@ -64,6 +64,77 @@
        .attr('r', function(d) { return d.r; })
        .call(drag)
        .style('fill', 'black');
+
+
+      var circle2 = battlefield.selectAll('.forcePlayer')
+        .data(startingPosition)
+        .enter()
+        .append('svg:circle')
+        .attr('class', 'forcePlayer')
+        .attr('cx', function(d) { return d.x; })
+        .attr('cy', function(d) { return d.y; })
+        .attr('r', function(d) { return d.r; })
+        .call(drag)
+        .style('fill', 'green');
+
+      var centerOfGravity = {x:boardWidth/2, y: boardHeight};
+
+      var force = d3.layout.force()
+          .nodes([centerOfGravity, circle2])
+          .links({source:circle2, target: centerOfGravity})
+          .size([50,50])
+          .linkStrength(0.1)
+          .friction(0.9)
+          .linkDistance(20)
+          .charge(-30)
+          .gravity(0.1)
+          .theta(0.8)
+          .alpha(0.1)
+          .start();
+
+      //attempt to use d3 force
+      var nodes = [],
+          foci = [{ x:boardWidth/2, y: boardHeight }];
+
+
+      var force = d3.layout.force()
+          .nodes(nodes)
+          .links([])
+          .gravity(0)
+          .size([50, 50])
+          .on("tick", tick);
+
+      var node = battlefield.selectAll(".forcePlayer");
+
+      function tick(e) {
+        var k = .1 * e.alpha;
+
+        // Push nodes toward their designated focus.
+        nodes.forEach(function(o, i) {
+          o.y += (foci[o.id].y - o.y) * k;
+          o.x += (foci[o.id].x - o.x) * k;
+        });
+
+        node
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+      }
+
+      nodes.push({id:0});
+      force.start();
+
+      node = node.data(nodes);
+
+      node.enter().append("circle")
+          .attr("class", "node")
+          .attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.y; })
+          .attr("r", 8)
+          .style("fill", function(d) { return fill(d.id); })
+          .style("stroke", function(d) { return d3.rgb(fill(d.id)).darker(2); })
+          .call(force.drag);
+
+
     }
     addPlayer();
 
