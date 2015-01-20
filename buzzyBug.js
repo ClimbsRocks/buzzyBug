@@ -11,10 +11,14 @@ var battlefield = d3.select('body').append('svg:svg')
 
 var currentScore = 0;
 var highScore = 0;
+var collisionInterval;
+var playerRadius = 25;
+var startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:playerRadius}];
 
 var gameStart = function() {
   //create a row of boxes that represents the safe zone
   var boxPositions = [];
+  console.log(boxPositions);
   var boxWidth = 20;
   var boxHeight = 450;
 
@@ -41,10 +45,8 @@ var gameStart = function() {
 
   //create a user, controllable by dragging
   var addPlayer = function() {
-    var radius = 25;
-    var startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:radius}];
     console.log('startingPosition: ', startingPosition);
-    battlefield.playerRadius = radius;
+    battlefield.playerRadius = playerRadius;
 
     var drag = d3.behavior.drag()
      .on('dragstart', function() { circle.style('fill', 'red'); })
@@ -76,7 +78,7 @@ var gameStart = function() {
   };
 
 
-  var collisionInterval = setInterval(function() {
+  collisionInterval = setInterval(function() {
     playerCoordinates();
     var boxNumber = Math.floor(playerPosition.x/boxWidth);
     var safeAreas = boxPositions[boxNumber];
@@ -147,9 +149,10 @@ var gameStart = function() {
   
 };
 
-gameStart();
 
 d3.select('#resetButton').on('click', function() {
+  clearInterval(collisionInterval);
+  startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:playerRadius}];
   gameStart();
 });
 //make the boxes different heights
