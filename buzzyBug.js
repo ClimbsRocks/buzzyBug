@@ -75,7 +75,7 @@
     d3.selectAll(".player").each( function(d, i){
       playerPosition.x = d3.select(this).attr("x");
     });
-    var boxNumber = Math.floor(playerPosition.x/boxWidth);
+    var boxNumber = Math.round(playerPosition.x/boxWidth);
     console.log(boxNumber);
     console.log(boxPositions[boxNumber]);
     collisionInterval = setInterval(function() {
@@ -151,8 +151,8 @@
 
     },75);
 
-  //start gravityInterval within the game
-  // var internalGravityInterval = gravityInterval();
+  // start gravityInterval within the game
+  var internalGravityInterval = gravityInterval();
 
   }
 
