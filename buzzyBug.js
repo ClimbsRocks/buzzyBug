@@ -114,22 +114,13 @@ var moveTimeout = setInterval(function() {
   }
     console.log(boxPositions[3]);
 
-  // try using remove to get rid of elements that are no longer useful;
-  battlefield
-      .selectAll('.safePlaces')
-      .data([])
-      .exit()
-      .remove()
-
   battlefield
       .selectAll('.safePlaces')
       .data(boxPositions)
-      .enter()
-      .append('svg:image')
       .attr('class', 'safePlaces')
       .attr('xlink:href', 'images/4.png')
       .attr('height', function(d) {return d[1];})
-      .attr('width', boxWidth)
+      .attr('width', 1*counter)
       .attr('x', function(d) { return d[2]*boxWidth; })
       .attr('y', function(d) { return d[0]; })
       .transition();
