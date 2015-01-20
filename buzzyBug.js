@@ -40,7 +40,6 @@
         .attr('y', function(d) { return d[0]; });
 
 
-
     //create a user, controllable by dragging
     var addPlayer = function() {
       var playerRadius = 25;
@@ -76,9 +75,7 @@
       var boxNumber = Math.floor(playerPosition.x/boxWidth);
       var safeAreas = boxPositions[boxNumber];
       if(playerPosition.y > safeAreas[0] && playerPosition.y < safeAreas[0] + safeAreas[1]) {
-        console.log('the player is safe');
       } else {
-        console.log('out of bounds!');
         //stop all the intervals
         clearInterval(moveTimeout);
         clearInterval(collisionInterval);
@@ -160,13 +157,11 @@
     return setInterval(function() {
       gravity--;
       var newY = [{x: boardWidth/2, y: currentY - gravity, r:25}];
-      console.log('gravity', gravity);
       d3.selectAll('.player')
         .data(newY)
         .transition()
         .duration(gravityIntervalTime)
         .attr('cy', function(d) {return d.y;});
-      console.log('player', d3.selectAll('.player'));
       currentY = currentY - gravity;
     }, gravityIntervalTime);
   }
@@ -183,7 +178,6 @@
   window.onkeydown = function(e) {
      var key = e.keyCode ? e.keyCode : e.which;
      if (key == 32) {
-         console.log('heard the spacebar!');
          e.preventDefault();
          gravity = 10;
      }
