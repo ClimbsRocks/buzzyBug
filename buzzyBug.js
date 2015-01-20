@@ -1,15 +1,3 @@
-//make sure to include a reference to this file in the index.html
-
-//crap, i'm probably doing this completely wrong! 
-//i'd been thinking about having boxes emerging from the top and bottom, with blank areas in between, and then checking against both of those boxes each time for collisions
-//i can invert that pattern. Just generate one box in the middle of the screen that is the safe area
-//the default styling for everything else on teh screen is going to be the enemy styling, while the box itself will have ally styling
-//then all we have to do is check the top and bottom positions of that box against the user's position
-
-//create an object that has box number as it's key, and then top/bottom positions as a tuple as it's value
-//we can lookup box number by taking the user's x position and dividing it by boxWidth; 
-//this is a super easy collision checker. 
-
 //sets the board based on the screen size
 var boardHeight = screen.height - 180;
 var boardWidth = screen.width - 200;
@@ -18,129 +6,149 @@ var battlefield = d3.select('body').append('svg:svg')
                     .attr('width', boardWidth)
                     .attr('height', boardHeight);
 
-/*
-  boxPositions will be filled with tuples
-  the index will give us the x positions (since they're in order and we know how wide each box is)
-  the first value of the tuple will give us the y position
-  the second value of the tuple will give us the height of the box
-*/
+var currentScore = 0;
+var highScore = 0;
 
-//create a row of boxes that represents the safe zone
-var boxPositions = [];
-var boxWidth = 20;
-var boxHeight = 450;
+var gameStart = function() {
+  //create a row of boxes that represents the safe zone
+  var boxPositions = [];
+  var boxWidth = 20;
+  var boxHeight = 450;
 
-for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
-  var heightStart = 200;
-  if(i%2 === 0 ) {
-    heightStart = 250;
+
+  for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
+    var heightStart = 200;
+    boxPositions.push([heightStart, boxHeight, i]);
   }
-  boxPositions.push([heightStart, boxHeight, i]);
-}
 
-//append initial images
-battlefield
-    .selectAll()
-    .data(boxPositions)
-    .enter()
-    .append('svg:image')
-    .attr('class','safePlaces')
-    .attr('xlink:href', 'images/4.png')
-    .attr('height', function(d) {return d[1];})
-    .attr('width', boxWidth)
-    .attr('x', function(d) { return d[2]*boxWidth; })
-    .attr('y', function(d) { return d[0]; });
-
-
-
-//create a user, controllable by dragging
-var addPlayer = function() {
-  var radius = 25;
-  var startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:radius}];
-  battlefield.playerRadius = radius;
-
-  var drag = d3.behavior.drag()
-   .on('dragstart', function() { circle.style('fill', 'red'); })
-   .on('drag', function() { circle.attr('cx', d3.event.x)
-                                  .attr('cy', d3.event.y); })
-   .on('dragend', function() { circle.style('fill', 'black'); });
-
- var circle = battlefield.selectAll('.player')
-   .data(startingPosition)
-   .enter()
-   .append('svg:circle')
-   .attr('class', 'player')
-   .attr('cx', function(d) { return d.x; })
-   .attr('cy', function(d) { return d.y; })
-   .attr('r', function(d) { return d.r; })
-   .call(drag)
-   .style('fill', 'black');
-}
-addPlayer();
-
-//check for collisions of the user and the boxes
-var playerPosition = {};
-
-var playerCoordinates = function() {
-  d3.selectAll(".player").each( function(d, i){
-    playerPosition.x = d3.select(this).attr("cx");
-    playerPosition.y = d3.select(this).attr("cy");
-  });
-};
-
-
-var collisionInterval = setInterval(function() {
-  playerCoordinates();
-  var boxNumber = Math.floor(playerPosition.x/boxWidth);
-  var safeAreas = boxPositions[boxNumber];
-  if(playerPosition.y > safeAreas[0] && playerPosition.y < safeAreas[0] + safeAreas[1]) {
-    console.log('the player is safe');
-  } else {
-    // debugger;
-    console.log('out of bounds!');
-  }
-}, 500);
-
-//move the boxes on a fixed interval
-var prevWasConstriction = false;
-var moveTimeout = setInterval(function() {
-  boxPositions.shift();
-  if(prevWasConstriction) {
-    //make it an easy one
-    heightStart = 200;
-    height = boxHeight;
-    prevWasConstriction = false;
-  } else {
-    //70% chance we'll make it a hard one
-    if(Math.random() > .3) {
-      height = 100;
-      heightStart = 50 + Math.random() * (boardHeight - 200);
-      prevWasConstriction = true;
-    } else {
-      heightStart = 200;
-      height = boxHeight;
-    }
-  }
-  boxPositions.push([heightStart, boxHeight, boxPositions.length]);
-
-  var boxes = battlefield
-      .selectAll('.safePlaces')
-      .data(boxPositions);
-  boxes.attr('x', function(d) { 
-    d[2]--;
-    return d[2]*boxWidth;} 
-    )
-      .attr('class', 'safePlaces')
+  //append initial images
+  battlefield
+      .selectAll()
+      .data(boxPositions)
+      .enter()
+      .append('svg:image')
+      .attr('class','safePlaces')
       .attr('xlink:href', 'images/4.png')
-      .attr('height', function(d) {console.log('d', d); return d[1];})
+      .attr('height', function(d) {return d[1];})
       .attr('width', boxWidth)
       .attr('x', function(d) { return d[2]*boxWidth; })
-      .attr('y', function(d) { return d[0]; })
+      .attr('y', function(d) { return d[0]; });
+
+
+
+  //create a user, controllable by dragging
+  var addPlayer = function() {
+    var radius = 25;
+    var startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:radius}];
+    console.log('startingPosition: ', startingPosition);
+    battlefield.playerRadius = radius;
+
+    var drag = d3.behavior.drag()
+     .on('dragstart', function() { circle.style('fill', 'red'); })
+     .on('drag', function() { circle.attr('cx', d3.event.x)
+                                    .attr('cy', d3.event.y); })
+     .on('dragend', function() { circle.style('fill', 'black'); });
+
+   var circle = battlefield.selectAll('.player')
+     .data(startingPosition)
+     .enter()
+     .append('svg:circle')
+     .attr('class', 'player')
+     .attr('cx', function(d) { return d.x; })
+     .attr('cy', function(d) { return d.y; })
+     .attr('r', function(d) { return d.r; })
+     .call(drag)
+     .style('fill', 'black');
+  }
+  addPlayer();
+
+  //check for collisions of the user and the boxes
+  var playerPosition = {};
+
+  var playerCoordinates = function() {
+    d3.selectAll(".player").each( function(d, i){
+      playerPosition.x = d3.select(this).attr("cx");
+      playerPosition.y = d3.select(this).attr("cy");
+    });
+  };
+
+
+  var collisionInterval = setInterval(function() {
+    playerCoordinates();
+    var boxNumber = Math.ceil(playerPosition.x/boxWidth);
+    var safeAreas = boxPositions[boxNumber];
+    if(playerPosition.y > safeAreas[0] && playerPosition.y < safeAreas[0] + safeAreas[1]) {
+      console.log('the player is safe');
+    } else {
+      console.log('out of bounds!');
+      clearInterval(moveTimeout);
+      if(currentScore > highScore) {
+        highScore = currentScore;
+        currentScore = 0;
+
+        d3.select('#highScore').
+        data([highScore]).
+        text(function(d) {
+          return d;
+        });
+      }
+    }
+  }, 50);
+
+  //move the boxes on a fixed interval
+  var prevWasConstriction = false;
+  var moveTimeout = setInterval(function() {
+    boxPositions.shift();
+    if(prevWasConstriction) {
+      //make it an easy one
+      heightStart = 200;
+      height = boxHeight;
+      prevWasConstriction = false;
+    } else {
+      //70% chance we'll make it a hard one
+      if(Math.random() > .3) {
+        height = 100;
+        heightStart = 50 + Math.random() * (boardHeight - 200);
+        prevWasConstriction = true;
+      } else {
+        heightStart = 200;
+        height = boxHeight;
+      }
+    }
+    boxPositions.push([heightStart, boxHeight, boxPositions.length]);
+
+    var boxes = battlefield
+        .selectAll('.safePlaces')
+        .data(boxPositions);
+    boxes.attr('x', function(d) { 
+      d[2]--;
+      return d[2]*boxWidth;} 
+      )
+        .attr('class', 'safePlaces')
+        .attr('xlink:href', 'images/4.png')
+        .attr('height', function(d) { return d[1];})
+        .attr('width', boxWidth)
+        .attr('x', function(d) { return d[2]*boxWidth; })
+        .attr('y', function(d) { return d[0]; })
+    
+    boxes.exit().remove();
+
+    currentScore++;
+    d3.select('#currentScore').
+    data([currentScore]).
+    text(function(d) {
+      return d;
+    });
+
+  },50);
   
-  boxes.exit().remove();
+};
 
-},1000);
+gameStart();
 
+d3.select('#resetButton').on('click', function() {
+  gameStart();
+});
 //make the boxes different heights
   //make the box heights make sense transitioning from one to the other
   //make the game progressively more difficult
