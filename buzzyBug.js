@@ -76,7 +76,7 @@ var gameStart = function() {
     });
   };
 
-
+  //CHECK FOR COLLISIONS ON A FIXED INTERVAL
   collisionInterval = setInterval(function() {
     playerCoordinates();
     var boxNumber = Math.floor(playerPosition.x/boxWidth);
@@ -102,6 +102,8 @@ var gameStart = function() {
   //move the boxes on a fixed interval
   var prevWasConstriction = false;
   var moveTimeout = setInterval(function() {
+
+    //CREATE NEW POSITIONS FOR BOXES
     boxPositions.shift();
     if(prevWasConstriction) {
       //make it an easy one
@@ -121,6 +123,7 @@ var gameStart = function() {
     }
     boxPositions.push([heightStart, boxHeight, boxPositions.length +1]);
 
+    //UPDATE BOXES IN D3 AND DOM
     var boxes = battlefield
         .selectAll('.safePlaces')
         .data(boxPositions);
@@ -137,6 +140,7 @@ var gameStart = function() {
     
     boxes.exit().remove();
 
+    //UPDATE SCORE
     currentScore++;
     d3.select('#currentScore').
     data([currentScore]).
@@ -145,6 +149,8 @@ var gameStart = function() {
     });
 
   },50);
+
+
   
 };
 
