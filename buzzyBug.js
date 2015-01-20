@@ -45,14 +45,7 @@
     var addPlayer = function() {
       var playerRadius = 25;
       var startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:playerRadius}];
-      var startingPosition2 = [{x: boardWidth/2, y: boardHeight/2, r:playerRadius}];
       battlefield.playerRadius = playerRadius;
-
-      var drag = d3.behavior.drag()
-       .on('dragstart', function() { circle.style('fill', 'red'); })
-       .on('drag', function() { circle.attr('cx', d3.event.x)
-                                      .attr('cy', d3.event.y); })
-       .on('dragend', function() { circle.style('fill', 'black'); });
 
      var circle = battlefield.selectAll('.player')
        .data(startingPosition)
@@ -63,74 +56,6 @@
        .attr('cy', function(d) { return d.y; })
        .attr('r', function(d) { return d.r; })
        .style('fill', 'orange');
-
-
-      // var circle2 = battlefield.selectAll('.forcePlayer')
-      //   .data(startingPosition)
-      //   .enter()
-      //   .append('svg:circle')
-      //   .attr('class', 'forcePlayer')
-      //   .attr('cx', function(d) { return d.x; })
-      //   .attr('cy', function(d) { return d.y; })
-      //   .attr('r', function(d) { return d.r; })
-      //   .call(drag)
-      //   .style('fill', 'green');
-
-      // //attempt to use d3 force
-      // var nodes = [],
-      //     foci = [{ x:boardWidth/2, y: boardHeight }];
-
-
-      // var force = d3.layout.force()
-      //     .nodes(nodes)
-      //     .links([])
-      //     .linkStrength(0.1)
-      //     .friction(0.5)
-      //     .gravity(0)
-      //     .size([50, 50])
-      //     .on("tick", tick);
-
-      // var node = battlefield.selectAll(".forcePlayer");
-
-      // //alpha is the 'temperature' of the transition
-      // //alpha is what slows it down, and eventually stops it
-      // function tick(e) {
-      //   var k = .1 * e.alpha;
-
-      //   // Push nodes toward their designated focus.
-      //   nodes.forEach(function(o, i) {
-      //     o.y += (foci[o.id].y - o.y) * k;
-      //   });
-
-      //   node
-      //       .attr("cy", function(d) { return d.y; });
-      // }
-
-      // nodes.push({id:0});
-      // force.start();
-
-      // node = node.data(nodes);
-
-      // node.enter().append("circle")
-      //     .attr("class", "node")
-      //     .attr("cx", function(d) { return d.x; })
-      //     .attr("cy", function(d) { return d.y; })
-      //     .attr("r", 8)
-      //     .style("fill", function(d) { return fill(d.id); })
-      //     .style("stroke", function(d) { return d3.rgb(fill(d.id)).darker(2); })
-      //     .call(force.drag);
-
-
-      //non-force
-      // var circleBounce = battlefield.selectAll('.player')
-      //   .data(startingPosition2)
-      //   .enter()
-      //   .append('svg:circle')
-      //   .attr('class', 'circleBounce')
-      //   .attr('cx', function(d) { return d.x; })
-      //   .attr('cy', function(d) { var currentY = d.y; return d.y; })
-      //   .attr('r', function(d) { return d.r; })
-      //   .style('fill', 'orange');
 
     }
     addPlayer();
@@ -227,10 +152,10 @@
 
   }
 
-  //all logic for gravity
+  //****GRAVITY LOGIC****
   var gravity = 0;
   var currentY = boardHeight/2;
-  var gravityIntervalTime = 50;
+  var gravityIntervalTime = 25;
   var gravityInterval = function() {
     return setInterval(function() {
       gravity--;
@@ -260,29 +185,14 @@
      if (key == 32) {
          console.log('heard the spacebar!');
          e.preventDefault();
-         gravity = 20;
-     } else {
-         console.log('heard the other thing!');
+         gravity = 10;
      }
   }
-  //Helper Functions:
 
 })  ();
 
 
-
-
-//gravity logic: 
-// 1. probably still make it a d3 element for transitions
-// 2. have a verticalSpeed variable. increase its negative velocity each 'tick'
-// 3. when spacebar is pressed, set its verticalSpeed to +10 or something.
-//     the increasing negative velocity of step 2 takes care of the rest
-
-
-
 /*
-  1. implement gravity
-  2. reverse gravity temporarily on spacebar
   3. style so that background is constant, and each pipe is translucent
   4. find a bug to style the icon with
   5. adjust the game mechanics a bit to make it easier
@@ -290,14 +200,6 @@
       likely more friction to make the user move more slowly
 */
 
-
-//make the boxes different heights
-  //make the box heights make sense transitioning from one to the other
-  //make the game progressively more difficult
-  //
-
-//let the user use the space bar to control the bug
-  //implement gravity
 
 //extra credit:
   //MAKE IT MOBILE!!
