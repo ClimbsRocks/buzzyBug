@@ -1,9 +1,6 @@
 //bugs: 
 (function() {
-
-
-  //sets the board based on the screen size
-  var boardHeight = screen.height - 180;
+  var boardHeight = screen.height - 380;
   var boardWidth = screen.width - 200;
   var battlefield = d3.select('body').append('svg:svg')
                       .attr('class', battlefield)
@@ -14,6 +11,8 @@
   var highScore = 0;
   var collisionInterval;
 
+
+  //sets the board based on the screen size
   var gameStart = function() {
     console.log('started a new game');
     //create a row of boxes that represents the safe zone
@@ -46,6 +45,7 @@
     var addPlayer = function() {
       var playerRadius = 25;
       var startingPosition = [{x: boardWidth/2, y: boardHeight/2, r:playerRadius}];
+      var startingPosition2 = [{x: boardWidth/2, y: boardHeight/2, r:playerRadius}];
       battlefield.playerRadius = playerRadius;
 
       var drag = d3.behavior.drag()
@@ -62,65 +62,75 @@
        .attr('cx', function(d) { return d.x; })
        .attr('cy', function(d) { return d.y; })
        .attr('r', function(d) { return d.r; })
-       .call(drag)
-       .style('fill', 'black');
+       .style('fill', 'orange');
 
 
-      var circle2 = battlefield.selectAll('.forcePlayer')
-        .data(startingPosition)
-        .enter()
-        .append('svg:circle')
-        .attr('class', 'forcePlayer')
-        .attr('cx', function(d) { return d.x; })
-        .attr('cy', function(d) { return d.y; })
-        .attr('r', function(d) { return d.r; })
-        .call(drag)
-        .style('fill', 'green');
+      // var circle2 = battlefield.selectAll('.forcePlayer')
+      //   .data(startingPosition)
+      //   .enter()
+      //   .append('svg:circle')
+      //   .attr('class', 'forcePlayer')
+      //   .attr('cx', function(d) { return d.x; })
+      //   .attr('cy', function(d) { return d.y; })
+      //   .attr('r', function(d) { return d.r; })
+      //   .call(drag)
+      //   .style('fill', 'green');
 
-      //attempt to use d3 force
-      var nodes = [],
-          foci = [{ x:boardWidth/2, y: boardHeight }];
+      // //attempt to use d3 force
+      // var nodes = [],
+      //     foci = [{ x:boardWidth/2, y: boardHeight }];
 
 
-      var force = d3.layout.force()
-          .nodes(nodes)
-          .links([])
-          .linkStrength(0.1)
-          .friction(0.5)
-          .gravity(0)
-          .size([50, 50])
-          .on("tick", tick);
+      // var force = d3.layout.force()
+      //     .nodes(nodes)
+      //     .links([])
+      //     .linkStrength(0.1)
+      //     .friction(0.5)
+      //     .gravity(0)
+      //     .size([50, 50])
+      //     .on("tick", tick);
 
-      var node = battlefield.selectAll(".forcePlayer");
+      // var node = battlefield.selectAll(".forcePlayer");
 
-      //alpha is the 'temperature' of the transition
-      //alpha is what slows it down, and eventually stops it
-      function tick(e) {
-        var k = .1 * e.alpha;
+      // //alpha is the 'temperature' of the transition
+      // //alpha is what slows it down, and eventually stops it
+      // function tick(e) {
+      //   var k = .1 * e.alpha;
 
-        // Push nodes toward their designated focus.
-        nodes.forEach(function(o, i) {
-          o.y += (foci[o.id].y - o.y) * k;
-        });
+      //   // Push nodes toward their designated focus.
+      //   nodes.forEach(function(o, i) {
+      //     o.y += (foci[o.id].y - o.y) * k;
+      //   });
 
-        node
-            .attr("cy", function(d) { return d.y; });
-      }
+      //   node
+      //       .attr("cy", function(d) { return d.y; });
+      // }
 
-      nodes.push({id:0});
-      force.start();
+      // nodes.push({id:0});
+      // force.start();
 
-      node = node.data(nodes);
+      // node = node.data(nodes);
 
-      node.enter().append("circle")
-          .attr("class", "node")
-          .attr("cx", function(d) { return d.x; })
-          .attr("cy", function(d) { return d.y; })
-          .attr("r", 8)
-          .style("fill", function(d) { return fill(d.id); })
-          .style("stroke", function(d) { return d3.rgb(fill(d.id)).darker(2); })
-          .call(force.drag);
+      // node.enter().append("circle")
+      //     .attr("class", "node")
+      //     .attr("cx", function(d) { return d.x; })
+      //     .attr("cy", function(d) { return d.y; })
+      //     .attr("r", 8)
+      //     .style("fill", function(d) { return fill(d.id); })
+      //     .style("stroke", function(d) { return d3.rgb(fill(d.id)).darker(2); })
+      //     .call(force.drag);
 
+
+      //non-force
+      // var circleBounce = battlefield.selectAll('.player')
+      //   .data(startingPosition2)
+      //   .enter()
+      //   .append('svg:circle')
+      //   .attr('class', 'circleBounce')
+      //   .attr('cx', function(d) { return d.x; })
+      //   .attr('cy', function(d) { var currentY = d.y; return d.y; })
+      //   .attr('r', function(d) { return d.r; })
+      //   .style('fill', 'orange');
 
     }
     addPlayer();
@@ -144,7 +154,10 @@
         console.log('the player is safe');
       } else {
         console.log('out of bounds!');
+        //stop all the intervals
         clearInterval(moveTimeout);
+        clearInterval(collisionInterval);
+        clearInterval(gravityInterval);
         if(currentScore > highScore) {
           highScore = currentScore;
           currentScore = 0;
@@ -208,25 +221,71 @@
       });
 
     },75);
+
+  //start gravityInterval within the game
+  gravityInterval = gravityInterval();
+
+  }
+
+
+  var gravity = 0;
+  var currentY = boardHeight/2;
+  var gravityIntervalTime = 100;
+  var gravityInterval = function() {
+    return setInterval(function() {
+      gravity--;
+      var newY = [{x: boardWidth/2, y: currentY - gravity, r:25}];
+      console.log('gravity', gravity);
+      d3.selectAll('.player')
+        .data(newY)
+        .transition()
+        .duration(gravityIntervalTime)
+        .attr('y', function(d) {console.log('d inside gravity', d); return d[0];});
+      currentY = currentY - gravity;
+    }, gravityIntervalTime);
   }
 
   d3.select('#resetButton').on('click', function() {
-    clearInterval(collisionInterval);
     battlefield.selectAll('.player').data([]).exit().remove();
     gameStart();
   });
+  //example: delete this
+  // gameBoard.
+  //   selectAll('.enemies').
+  //   data(randomPositions).
+  //   transition().
+  //   duration(5000).
+  //   attr('x', function(d){ return d[0]}).
+  //   attr('y', function(d){ return d[1]});
+
 
   window.onkeydown = function(e) {
      var key = e.keyCode ? e.keyCode : e.which;
-
      if (key == 32) {
          console.log('heard the spacebar!');
          e.preventDefault();
-     }else {
+         //i could just update it's y position, and make that a transition
+         //i'd have to create some kind of a 'isSpringing' variable to override normal gravity temporarily;
+         //or say just screw it, do it myself. i think that's what i prefer. 
+         console.log(d3.selectAll('.forcePlayer'));
+     } else {
          console.log('heard the other thing!');
      }
   }
+  //Helper Functions:
+
 })  ();
+
+
+
+
+//gravity logic: 
+// 1. probably still make it a d3 element for transitions
+// 2. have a verticalSpeed variable. increase its negative velocity each 'tick'
+// 3. when spacebar is pressed, set its verticalSpeed to +10 or something.
+//     the increasing negative velocity of step 2 takes care of the rest
+
+
 
 /*
   1. implement gravity
