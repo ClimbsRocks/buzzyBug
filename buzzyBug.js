@@ -7,7 +7,9 @@
                       .attr('width', boardWidth)
                       .attr('height', boardHeight)
                       .style('margin-right', 'auto')
-                      .style('margin-left', 'auto');
+                      .style('margin-left', 'auto')
+                      .style('display', 'block')
+                      .style('margin-top', '100px');
 
   var currentScore = 0;
   var highScore = 0;
@@ -35,11 +37,13 @@
         .enter()
         .append('svg:image')
         .attr('class','safePlaces')
-        .attr('xlink:href', 'images/8.png')
+        .attr('xlink:href', 'images/12.png')
         .attr('height', function(d) {return d[1];})
         .attr('width', boxWidth)
         .attr('x', function(d) { return d[2]*boxWidth; })
-        .attr('y', function(d) { return d[0]; });
+        .attr('y', function(d) { return d[0]; })
+        .style('width','auto:100%')
+        .style('height','auto:100%');
 
 
     //create a user, controllable by dragging
@@ -115,7 +119,7 @@
         prevWasConstriction = false;
       } else {
         //70% chance we'll make it a hard one
-        if(Math.random() > .4) {
+        if(Math.random() > .5) {
           height = boxHeight*.75;
           heightStart = Math.random() * (boardHeight - boxHeight/2 -50);
           prevWasConstriction = true;
@@ -135,11 +139,13 @@
         return d[2]*boxWidth;} 
         )
           .attr('class', 'safePlaces')
-          .attr('xlink:href', 'images/8.png')
+          .attr('xlink:href', 'images/12.png')
           .attr('height', function(d) { return d[1];})
           .attr('width', boxWidth)
           .attr('x', function(d) { return d[2]*boxWidth; })
           .attr('y', function(d) { return d[0]; })
+          // .attr('width','auto:100%')
+          // .attr('height','auto:100%');
       
       boxes.exit().remove();
 
@@ -191,7 +197,7 @@
          e.preventDefault();
          if(gameIsRunning) {
            gravity = 12.5;
-         } else if (Date.now() > lastGameEnd + 200) {
+         } else if (Date.now() > lastGameEnd + 400) {
           battlefield.selectAll('.player').data([]).exit().remove();
           gameStart();
           gravity = 0;
