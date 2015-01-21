@@ -27,10 +27,19 @@ h1 {
   color:white;
 }
 
+h2 {
+  display:block;
+  width:450px;
+  margin-left: auto;
+  margin-right:auto;
+  color:white;
+}
+
 .battlefield {
   display:block;
   margin-left:auto;
   margin-right:auto;
+  margin-top:25px;
 }
 
 html { 

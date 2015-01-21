@@ -9,7 +9,7 @@
                       .style('margin-right', 'auto')
                       .style('margin-left', 'auto')
                       .style('display', 'block')
-                      .style('margin-top', '100px');
+                      .style('margin-top', '25px');
 
   var currentScore = 0;
   var highScore = 0;
