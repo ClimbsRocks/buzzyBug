@@ -18,10 +18,10 @@ Once the project moves into development, the press release can be used as a touc
  
 ## A game navigating a bug deeper and deeper into some evil empire's codebase ##
   > Play a white hat hacker, trying to penetrate deeper and deeper into some evil empire's nefarious project.
-<!---->
-<!--## Sub-Heading ##-->
-<!--  > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.-->
-<!---->
+
+## Just press the space bar to keep your bug alive ##
+  > Stay in the clean path of code- avoid the lava!!
+
 <!--## Summary ##-->
 <!--  > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.-->
 <!---->

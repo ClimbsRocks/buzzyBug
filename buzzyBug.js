@@ -1,4 +1,3 @@
-//bugs: 
 (function() {
   var boardHeight = window.screen.availHeight - 380;
   var boardWidth = window.screen.availWidth - 200;
@@ -211,15 +210,6 @@
 })  ();
 
 
-/*
-  3. style so that background is constant, and each pipe is translucent
-  4. find a bug to style the icon with
-  5. adjust the game mechanics a bit to make it easier
-      more room between tough pipes
-      likely more friction to make the user move more slowly
-*/
-
-
 //extra credit:
   //MAKE IT MOBILE!!
     //wrap it in ionic
@@ -233,13 +223,3 @@
   //overall leaderboard
 
   //multiple players?? seems like a bad ux
-
-
-
-//style everything
-  //boxes are random arrays of 1's and 0's
-  //make the user into a bug
-  //background of the page?
-  //background of the battlefield?
-  //user score
-  //user image: 8 bit version of a bug
