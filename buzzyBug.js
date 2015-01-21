@@ -1,11 +1,13 @@
 //bugs: 
 (function() {
-  var boardHeight = screen.height - 380;
-  var boardWidth = screen.width - 200;
+  var boardHeight = window.screen.availHeight - 380;
+  var boardWidth = window.screen.availWidth - 200;
   var battlefield = d3.select('body').append('svg:svg')
                       .attr('class', battlefield)
                       .attr('width', boardWidth)
-                      .attr('height', boardHeight);
+                      .attr('height', boardHeight)
+                      .style('margin-right', 'auto')
+                      .style('margin-left', 'auto');
 
   var currentScore = 0;
   var highScore = 0;
@@ -22,7 +24,7 @@
 
 
     for(var i = 0; i <= Math.ceil(boardWidth/boxWidth); i++) {
-      var heightStart = (boardHeight - boxHeight)/2 ;
+      var heightStart = (boardHeight - boxHeight)/2;
       boxPositions.push([heightStart, boxHeight, i]);
     }
 
@@ -43,7 +45,7 @@
     //create a user, controllable by dragging
     var addPlayer = function() {
       var playerRadius = 25;
-      var startingPosition = [{x: boardWidth/3, y: boardHeight/2, r:playerRadius}];
+      var startingPosition = [{x: boardWidth/3, y: boardHeight/3, r:playerRadius}];
       battlefield.playerRadius = playerRadius;
 
      var circle = battlefield.selectAll('.player')
@@ -159,7 +161,7 @@
 
   //****GRAVITY LOGIC****
   var gravity = 0;
-  var currentY = boardHeight/2;
+  var currentY = boardHeight/3;
   var gravityIntervalTime = 25;
   var gravityInterval = function() {
     return setInterval(function() {
@@ -178,7 +180,7 @@
     battlefield.selectAll('.player').data([]).exit().remove();
     gameStart();
     gravity = 0;
-    currentY = boardHeight/2;
+    currentY = boardHeight/3;
     
   });
 
@@ -193,7 +195,7 @@
           battlefield.selectAll('.player').data([]).exit().remove();
           gameStart();
           gravity = 0;
-          currentY = boardHeight/2;
+          currentY = boardHeight/3;
           
          }
 
